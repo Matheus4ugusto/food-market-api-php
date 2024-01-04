@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
-use GuzzleHttp\Psr7\Response;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -29,6 +28,31 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Usuário cadastrado!',
             'user' => $user,
-        ], HttpResponse::HTTP_CREATED);
+        ], Response::HTTP_CREATED);
+    }
+
+    public function login(LoginRequest $request)
+    {
+        $credentials = $request->only(['email', 'password']);
+        $token =  auth()->attempt($credentials);
+        if (!$token) {
+            return response()->json([
+                'error' => 'Não autorizado'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        return response()->json([
+            'token' => $token,
+            'type' => 'Bearer'
+        ]);
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+
+        return response()->json([
+            'message' => 'Deslogado com sucesso!'
+        ], Response::HTTP_OK);
     }
 }
