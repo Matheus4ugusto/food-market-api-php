@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,12 +24,20 @@ Route::prefix("/v1")->group(function () {
 
     Route::prefix('/stores')->group(function () {
         Route::get('/', [StoreController::class, 'index']);
-        Route::get('/{store_id}',[StoreController::class, 'show']);
+        Route::get('/{store_id}', [StoreController::class, 'show']);
         Route::post('/', [StoreController::class, 'store'])
             ->middleware(['auth:api', 'permission:ADMIN,MANAGER,SELLER']);
         Route::put('/{store_id}', [StoreController::class, 'update'])
             ->middleware(['auth:api'], 'permission:ADMIN,MANAGER,SELLER');
         Route::delete('/{store_id}', [StoreController::class, 'delete'])
             ->middleware(['auth:api'], 'permission:ADMIN,MANAGER,SELLER');
+    });
+
+    Route::prefix('/product')->group(function () {
+        Route::get('/', [ProductController::class, 'index']);
+        Route::get('/{product_id}', [ProductController::class, 'show']);
+        Route::post('/', [ProductController::class, 'store']);
+        Route::put('/{product_id}', [ProductController::class, 'update']);
+        Route::delete('/{product_id}', [ProductController::class, 'destroy']);
     });
 });
