@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
+use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
@@ -24,6 +25,9 @@ class AuthController extends Controller
         $userData['password'] = Hash::make($request->get('password'));
 
         $user = User::create($userData);
+
+        $role = Permission::where('name','CUSTOMER')->first();
+        $user->permissions()->attach($role);
 
         return response()->json([
             'message' => 'Usuário cadastrado!',

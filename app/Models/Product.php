@@ -11,6 +11,7 @@ class Product extends Model
     use HasFactory;
     use Mediable;
 
+
     protected $fillable = [
         'store_id',
         'name',
@@ -18,6 +19,25 @@ class Product extends Model
         'price',
         'status',
     ];
+
+    protected $appends = [
+        'images'
+    ];
+
+    protected $hidden = ['media'];
+
+    public function getImagesAttribute()
+    {
+        $images = $this->getMedia('products');
+
+        return $images->map(function ($image) {
+            return [
+                'id' => $image->id,
+                'url' => $image->getUrl(),
+                'name' => $image->filename
+            ];
+        })->toArray();
+    }
 
     public function store()
     {

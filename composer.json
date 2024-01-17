@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.3",
         "plank/laravel-mediable": "^5.9",
+        "stripe/stripe-php": "^13.8",
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {

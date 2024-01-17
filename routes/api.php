@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
@@ -39,5 +40,15 @@ Route::prefix("/v1")->group(function () {
         Route::post('/', [ProductController::class, 'store']);
         Route::put('/{product_id}', [ProductController::class, 'update']);
         Route::delete('/{product_id}', [ProductController::class, 'destroy']);
+    });
+
+    Route::prefix('/orders')->group(function () {
+        Route::get('/', [OrderController::class, 'index']);
+        Route::post('/', [OrderController::class, 'store']);
+        Route::post(
+            '/{order_id}/checkout',
+            [OrderController::class, 'checkout']
+        );
+        Route::post('/webhook', [OrderController::class, 'webhook']);
     });
 });

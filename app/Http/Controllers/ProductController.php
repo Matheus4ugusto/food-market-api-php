@@ -35,6 +35,9 @@ class ProductController extends Controller
 
         $product = Product::create($productData);
 
+        if ($request->has('images')) {
+            $this->uploadImages($request->images, $product);
+        }
 
         return response()->json($product, Response::HTTP_CREATED);
     }
@@ -54,6 +57,10 @@ class ProductController extends Controller
 
         $product->update($productData);
 
+        if ($request->has('images')) {
+            $this->uploadImages($request->images, $product);
+        }
+
         return response()->json($product, Response::HTTP_OK);
     }
 
@@ -71,9 +78,10 @@ class ProductController extends Controller
         foreach ($images as $image) {
             $imageUploaded = MediaUploader::fromSource($this->uploadFile($image))
                 ->toDisk('public')
-                ->toDirectory($product->store->id)
+                ->toDirectory("stores/{$product->store->id}")
                 ->useHashForFilename()
                 ->upload();
+                
             $product->attachMedia($imageUploaded, 'products');
         }
     }
